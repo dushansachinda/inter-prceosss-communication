@@ -18,6 +18,16 @@ The following are the sections available in this guide.
 ## What you’ll build
 In a monolithic application process, components interactions are designed in a way that invoke one another via language‑level method or function calls. On the other hand, a microservices‑based application fully focused on distributed system running on multiple singular containers. Each service instance is typically a process. Consequently, as the following diagram shows, services must interact using an inter‑process communication (IPC) mechanism.
 
+When selecting an Inter process communication mechanism for a service, it is always useful to think first about how services interact. There are a variety of client⇔service interaction styles. They can be categorized along two dimensions. The first dimension is whether the interaction is one‑to‑one or one‑to‑many:
+
+- One‑to‑one – Each client request is processed by exactly one service instance.
+- One‑to‑many – Each request is processed by multiple service instances.
+- The second dimension is whether the interaction is synchronous or asynchronous:
+
+- Synchronous – The client expects a timely response from the service and might even block while it waits.
+- Asynchronous – The client doesn’t block while waiting for a response, and the response, if any, isn’t necessarily sent immediately.
+
+Each service typically uses a combination of these interaction styles. For some services, a single IPC mechanism is sufficient. Other services might need to use a combination of IPC mechanisms. The following diagram shows how services in a taxi-hailing application might interact when the user requests a trip.
 
 ![alt text](/images/messaging-with-jms-queues.svg)
 
