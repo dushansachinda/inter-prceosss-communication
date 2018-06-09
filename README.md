@@ -491,10 +491,6 @@ To see the complete implementation of the above, refer to the [bookstore_service
 ```bash
    $ ballerina run driver-management
 ```
-
-```bash
-   $ ballerina run order_delivery_system
-```
    
 - Then you may simulate requesting pickup call to the  `trip-management` .
 
