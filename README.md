@@ -35,7 +35,7 @@ In Microservices architecture, The services use a combination of notifications, 
 ![alt text](/images/Richardson-microservices-part3-taxi-service.png)
 
 
-
+So, lets try to demonstrate the scenario,
 In this example `Apache ActiveMQ` has been used as the JMS broker. Ballerina JMS Connector is used to connect Ballerina 
 and JMS Message Broker. With this JMS Connector, Ballerina can act as both JMS Message Consumer and JMS Message 
 Producer.
@@ -69,57 +69,138 @@ Ballerina is a complete programming language that supports custom project struct
 │   └── notification.bal
 ├── passenger-management
 │   └── passenger-management.bal
-├── readme.txt
 └── trip-management
     └── trip-management.bal
 ```
 
 - Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `messaging-with-jms-queues/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to `inter-prceosss-communication/guide` and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
 
 ### Developing the service
 
-Let's get started with the implementation of the `order_delivery_system`, which acts as the JMS message consumer. 
+Let's get started with the implementation of the `trip-management.bal`, which acts as the middle man to coordinate the interactions between passenger management and dispatcher. 
 Refer to the code attached below. Inline comments added for better understanding.
 
-##### order_delivery_system.bal
-```ballerina
+##### trip-management.bal
+```
 import ballerina/log;
+import ballerina/http;
 import ballerina/jms;
+import ballerinax/docker;
 
-// Initialize a JMS connection with the provider
-// 'Apache ActiveMQ' has been used as the message broker
-jms:Connection conn = new({
-    initialContextFactory:"org.apache.activemq.jndi.ActiveMQInitialContextFactory",
-    providerUrl:"tcp://localhost:61616"
-});
-
-// Initialize a JMS session on top of the created connection
-jms:Session jmsSession = new(conn, {
-    // Optional property. Defaults to AUTO_ACKNOWLEDGE
-    acknowledgementMode:"AUTO_ACKNOWLEDGE"
-});
-
-// Initialize a queue receiver using the created session
-endpoint jms:QueueReceiver jmsConsumer {
-    session:jmsSession,
-    queueName:"OrderQueue"
+// Type definition for a book order
+type pickup {
+    string customerName;
+    string address;
+    string phonenumber;
 };
 
-// JMS service that consumes messages from the JMS queue
-// Bind the created consumer to the listener service
-service<jms:Consumer> orderDeliverySystem bind jmsConsumer {
-    // Triggered whenever an order is added to the 'OrderQueue'
-    onMessage(endpoint consumer, jms:Message message) {
-        log:printInfo("New order received from the JMS Queue");
-        // Retrieve the string payload using native function
-        string stringPayload = check message.getTextMessageContent();
-        log:printInfo("Order Details: " + stringPayload);
+
+// Initialize a JMS connection with the provider
+// 'providerUrl' and 'initialContextFactory' vary based on the JMS provider you use
+// 'Apache ActiveMQ' has been used as the message broker in this example
+jms:Connection jmsConnection = new({
+        initialContextFactory: "org.apache.activemq.jndi.ActiveMQInitialContextFactory",
+        providerUrl: "tcp://localhost:61616"
+    });
+
+// Initialize a JMS session on top of the created connection
+jms:Session jmsSession = new(jmsConnection, {
+        acknowledgementMode: "AUTO_ACKNOWLEDGE"
+    });
+
+// Initialize a queue sender using the created session
+endpoint jms:QueueSender jmsTripDispatchOrder {
+    session:jmsSession,
+    queueName:"trip-dispatcher"
+};
+
+// Client endpoint to communicate with passager management service
+endpoint http:Client passengerMgtEP {
+    url:"http://localhost:9091/passenger-management"
+};
+
+
+// Service endpoint
+endpoint http:Listener listener {
+    port:9090
+};
+
+
+// Trip management serice, which will take client pickup request
+@http:ServiceConfig {basePath:"/trip-manager"}
+service<http:Service> TripManagement bind listener {
+    // Resource that allows users to place an order for a book
+    @http:ResourceConfig { methods: ["POST"], consumes: ["application/json"],
+        produces: ["application/json"], path : "/pickup" }
+    pickup(endpoint caller, http:Request request) {
+        http:Response response;
+        pickup pickup;
+        json reqPayload;
+
+        // Try parsing the JSON payload from the request
+        match request.getJsonPayload() {
+            // Valid JSON payload
+            json payload => reqPayload = payload;
+            // NOT a valid JSON payload
+            any => {
+                response.statusCode = 400;
+                response.setJsonPayload({"Message":"Invalid payload - Not a valid JSON payload"});
+                _ = caller -> respond(response);
+                done;
+            }
+        }
+
+        json name = reqPayload.Name;
+        json address = reqPayload.pickupaddr;
+        json contact = reqPayload.ContactNumber;
+
+
+        // If payload parsing fails, send a "Bad Request" message as the response
+        if (name == null || address == null || contact == null) {
+            response.statusCode = 400;
+            response.setJsonPayload({"Message":"Bad Request - Invalid Trip Request payload"});
+            _ = caller -> respond(response);
+            done;
+        }
+
+        // Order details
+        pickup.customerName = name.toString();
+        pickup.address = address.toString();
+        pickup.phonenumber = contact.toString();
+    
+        log:printInfo("Calling passenger management service:");
+      
+        // call passanger-management and get passagner orginization claims
+        json responseMessage;
+        http:Request passangermanagerReq;
+        json pickupjson = check <json>pickup;
+        passangermanagerReq.setJsonPayload(pickupjson);
+        http:Response passangerResponse= check passengerMgtEP -> post("/claims", request = passangermanagerReq);
+        json passangerResponseJSON = check passangerResponse.getJsonPayload();
+
+        // Dispatch to the dispatcher service
+        // Create a JMS message
+        jms:Message queueMessage = check jmsSession.createTextMessage(passangerResponseJSON.toString());
+            // Send the message to the JMS queue
+        
+        log:printInfo("Hand over to the trip dispatcher to coordinate driver and  passenger:");
+        _ = jmsTripDispatchOrder -> send(queueMessage);
+
+        //TODO get passager claims
+        // CREATE TRIP
+        // CALL DISPATCHER FOR CONTACT DRIVER and PASSANGER
+        log:printInfo("passanger-magement response:"+passangerResponseJSON.toString());
+        // Send response to the user
+        responseMessage = {"Message":"Trip information received"};
+        response.setJsonPayload(responseMessage);
+        _ = caller -> respond(response);
     }
+
 }
 ```
 
