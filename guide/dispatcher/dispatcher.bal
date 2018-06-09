@@ -109,11 +109,8 @@ service<jms:Consumer> TripDispatcher bind jmsConsumer {
 
         log:printInfo("Driver Contacted Trip notification dispatching " + tripjson.toString());
 
-
         jms:Message queueMessage = check jmsSession.createTextMessage(tripjson.toString());
-       
-        
-        
+         
         fork {
             worker w1 {
                 _ = jmsPassengerMgtNotifer -> send(queueMessage);
