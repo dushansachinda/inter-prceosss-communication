@@ -4,7 +4,7 @@
 
 In this guide we are focusing on building applications with a microservices architecture. In this article, we are considering a look at how the services within a system communicate with one another.
 
-> This guide walks you through the process of using Ballerina to send messages with JMS queues using a message broker.
+> This guide walks you through the process of describing implementing inter-process communication using Ballerina programming language.
 
 The following are the sections available in this guide.
 
