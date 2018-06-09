@@ -36,7 +36,7 @@ In Microservices architecture, The services use a combination of notifications, 
 
 
 So, lets try to demonstrate the scenario,
-In this example `Apache ActiveMQ` has been used as the JMS broker. Ballerina JMS Connector is used to connect Ballerina 
+In this example `Apache ActiveMQ` has been used as the JMS broker for inter process communication through notification channel. Ballerina JMS Connector is used to connect Ballerina 
 and JMS Message Broker. With this JMS Connector, Ballerina can act as both JMS Message Consumer and JMS Message 
 Producer.
 
