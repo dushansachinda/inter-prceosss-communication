@@ -505,7 +505,8 @@ To see the complete implementation of the above, refer to the [bookstore_service
    "http://localhost:9090/trip-manager/pickup" -H "Content-Type:application/json" 
 ```
 
-  The bookstoreService sends a response similar to the following.
+  The Trip management sends a response similar to the following which is similar to the acknowledged to the pickup request followed by he will receiving
+  trip notification information through different channel
 ```
 < HTTP/1.1 200 OK
 < content-type: application/json
@@ -514,11 +515,11 @@ To see the complete implementation of the above, refer to the [bookstore_service
 < date: Fri, 8 Jun 2018 21:25:29 -0700
 <
 * Connection #0 to host localhost left intact
-{"Message":"Trip information received"}Dushans-MacBook-Pro-3:~ dushan$
+{"Message":"Trip information received"}
 ```
    
 
-
+***************  SECTION BELOW HERE STILL UNDER CONTRUCTION *****
 
 ### Writing unit tests 
 
@@ -669,43 +670,7 @@ service<http:Service> bookstoreService bind listener {
 ##### bookstore_service.bal
 
 ```ballerina
-import ballerinax/kubernetes;
-// Other imports
 
-// Type definition for a book order
-
-json[] bookInventory = ["Tom Jones", "The Rainbow", "Lolita", "Atonement", "Hamlet"];
-
-// 'jms:Connection' definition
-
-// 'jms:Session' definition
-
-// 'jms:QueueSender' endpoint definition
-
-@kubernetes:Ingress {
-  hostname:"ballerina.guides.io",
-  name:"ballerina-guides-bookstore-service",
-  path:"/"
-}
-
-@kubernetes:Service {
-  serviceType:"NodePort",
-  name:"ballerina-guides-bookstore-service"
-}
-
-@kubernetes:Deployment {
-  image:"ballerina.guides.io/bookstore_service:v1.0",
-  name:"ballerina-guides-bookstore-service",
-  copyFiles:[{target:"/ballerina/runtime/bre/lib",
-                  source:<path_to_JMS_broker_jars>}]
-}
-
-endpoint http:Listener listener {
-    port:9090
-};
-
-@http:ServiceConfig {basePath:"/bookstore"}
-service<http:Service> bookstoreService bind listener {
 ``` 
 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. `copyFiles` field is used to copy required JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to this field.
@@ -746,10 +711,7 @@ service<http:Service> bookstoreService bind listener {
 
 Node Port:
 ```bash
-   curl -v -X POST -d '{"Name":"Bob", "Address":"20, Palm Grove, Colombo, Sri Lanka", 
-   "ContactNumber":"+94777123456", "BookName":"The Rainbow"}' \
-   "http://localhost:<Node_Port>/bookstore/placeOrder" -H \
-   "Content-Type:application/json"  
+     
 ```
 
 Ingress:
@@ -761,9 +723,7 @@ Add `/etc/hosts` entry to match hostname.
 
 Access the service 
 ```bash
-   curl -v -X POST -d '{"Name":"Bob", "Address":"20, Palm Grove, Colombo, Sri Lanka", 
-   "ContactNumber":"+94777123456", "BookName":"The Rainbow"}' \
-   "http://ballerina.guides.io/bookstore/placeOrder" -H "Content-Type:application/json" 
+   
 ```
 
 
