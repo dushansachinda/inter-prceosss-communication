@@ -512,7 +512,17 @@ To see the complete implementation of the above, refer to the [bookstore_service
 * Connection #0 to host localhost left intact
 {"Message":"Trip information received"}
 ```
-   
+
+Driver management service would receive trip notification, the notification service can will render relevant information in the customer handheld device through notification
+
+```
+2018-06-08 22:08:38,361 INFO  [driver-management] - Trip Details: {"tripID":"0001","driver":{"driverID":"driver001","drivername":"Adeel Sign"},"person":{"name":"dushan","address":"1817","phonenumber":"0014089881345","registerID":"AB0001222","email":"dushan@wso2.com"},"time":"2018 Jan 6 10:10:20"}
+```
+
+Similarly passanger would get his trip notification
+```
+2018-06-08 22:08:38,346 INFO  [passenger-management] - Trip Details:{"tripID":"0001","driver":{"driverID":"driver001","drivername":"Adeel Sign"},"person":{"name":"dushan","address":"1817","phonenumber":"0014089881345","registerID":"AB0001222","email":"dushan@wso2.com"},"time":"2018 Jan 6 10:10:20"}
+```
 
 ***************  SECTION BELOW HERE STILL UNDER CONTRUCTION *****
 
