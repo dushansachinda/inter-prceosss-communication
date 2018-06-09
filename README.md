@@ -29,7 +29,9 @@ When selecting an Inter process communication mechanism for a service, it is alw
 
 Each service typically uses a combination of these interaction styles. For some services, a single IPC mechanism is sufficient. Other services might need to use a combination of IPC mechanisms. The following diagram shows how services in a taxi-hailing application might interact when the user requests a trip.
 
-![alt text](/images/messaging-with-jms-queues.svg)
+![alt text](/images/Richardson-microservices-part3-monolith-vs-microservices-1024x518.png)
+
+![alt text](/images/Richardson-microservices-part3-taxi-service.png)
 
 
 
