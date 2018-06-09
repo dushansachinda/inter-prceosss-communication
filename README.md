@@ -406,7 +406,6 @@ service<jms:Consumer> PassengerNotificationService bind jmsConsumer {
 
 
 
-
 ##### driver-management.bal
 ```ballerina
 import ballerina/http;
@@ -481,11 +480,11 @@ To see the complete implementation of the above, refer to the [bookstore_service
    $ ballerina run trip-management
 ```
 ```bash
-   $ ballerina run passenger-management
+   $ ballerina run dispatcher
 ```
 
 ```bash
-   $ ballerina run dispatcher
+   $ ballerina run passenger-management
 ```
 
 ```bash
