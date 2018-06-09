@@ -492,52 +492,49 @@ To see the complete implementation of the above, refer to the [bookstore_service
    $ ./activemq start
 ```
 
-- Navigate to `messaging-with-jms-queues/guide` and run the following commands in separate terminals to start both the JMS producer `bookstoreService` and  JMS consumer `orderDeliverySystem`.
+- Navigate to `inter-prceosss-communication/guide` and run the following commands in separate terminals to start  `trip-management`,  `passenger-management` ,`dispatcher`, `driver-management` microservices.
 ```bash
-   $ ballerina run bookstore_service
+   $ ballerina run trip-management
+```
+```bash
+   $ ballerina run passenger-management
+```
+
+```bash
+   $ ballerina run dispatcher
+```
+
+```bash
+   $ ballerina run driver-management
 ```
 
 ```bash
    $ ballerina run order_delivery_system
 ```
    
-- Invoke the `bookstoreService` by sending a GET request to check the available books.
-
-```bash
-   curl -v -X GET localhost:9090/bookstore/getBookList
-```
-
-  The bookstoreService sends a response similar to the following.
-```
-   < HTTP/1.1 200 OK
-   ["Tom Jones","The Rainbow","Lolita","Atonement","Hamlet"]
-```
-   
-- Place an order using the following command.
+- Then you may simulate requesting pickup call to the  `trip-management` .
 
 ```bash
    curl -v -X POST -d \
-   '{"Name":"Bob", "Address":"20, Palm Grove, Colombo, Sri Lanka", 
-   "ContactNumber":"+94777123456", "BookName":"The Rainbow"}' \
-   "http://localhost:9090/bookstore/placeOrder" -H "Content-Type:application/json"
+   '{"Name":"Dushan", "pickupaddr":"1817, Anchor Way, San Jose, US", 
+   "ContactNumber":"0014089881345"}' \
+   "http://localhost:9090/trip-manager/pickup" -H "Content-Type:application/json" 
 ```
 
   The bookstoreService sends a response similar to the following.
 ```
-   < HTTP/1.1 200 OK
-   {"Message":"Your order is successfully placed. Ordered book will be delivered soon"} 
+< HTTP/1.1 200 OK
+< content-type: application/json
+< content-length: 39
+< server: ballerina/0.970.1
+< date: Fri, 8 Jun 2018 21:25:29 -0700
+<
+* Connection #0 to host localhost left intact
+{"Message":"Trip information received"}Dushans-MacBook-Pro-3:~ dushan$
 ```
+   
 
-  Sample Log Messages:
-```bash
-    INFO  [bookstore_service] - New order added to the JMS Queue;
-        CustomerName: 'Bob', OrderedBook: 'The Rainbow';
 
-    INFO  [order_delivery_system] - New order received from the JMS Queue
-    INFO  [order_delivery_system] - Order Details: {"customerName":"Bob", 
-        "address":"20, Palm Grove, Colombo, Sri Lanka", "contactNumber":"+94777123456",
-        "orderedBookName":"The Rainbow"} 
-```
 
 ### Writing unit tests 
 
@@ -550,7 +547,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
   
 This guide contains unit test cases for each resource available in the 'bookstore_service' implemented above. 
 
-To run the unit tests, navigate to `messaging-with-jms-queues/guide` and run the following command. 
+To run the unit tests, navigate to `inter-prceosss-communication/guide/guide` and run the following command. 
 ```bash
    $ ballerina test
 ```
