@@ -31,6 +31,7 @@ Each service typically uses a combination of these interaction styles. For some 
 
 ![alt text](/images/Richardson-microservices-part3-monolith-vs-microservices-1024x518.png)
 
+In Microservices architecture, The services use a combination of notifications, request/response, and publish/subscribe. For example, the passenger’s smartphone sends a notification to the Trip Management service to request a pickup. The Trip Management service verifies that the passenger’s account is active by using request/response to invoke the Passenger Service. The Trip Management service then creates the trip and uses publish/subscribe to notify other services including the Dispatcher, which locates an available driver.
 ![alt text](/images/Richardson-microservices-part3-taxi-service.png)
 
 
