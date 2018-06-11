@@ -323,7 +323,7 @@ service<jms:Consumer> TripDispatcher bind jmsConsumer {
 
 
 ##### passenger-management.bal
-![alt text](/images/passenger-management.png)
+![alt text](/images/passanger-management.png)
 
 ```ballerina
 import ballerina/http;
