@@ -306,10 +306,10 @@ service<jms:Consumer> TripDispatcher bind jmsConsumer {
         jms:Message queueMessage = check jmsSession.createTextMessage(tripjson.toString());
          
         fork {
-            worker w1 {
+            worker passengerNotification {
                 _ = jmsPassengerMgtNotifer -> send(queueMessage);
             }
-            worker w2 {
+            worker driverNotification {
                _ = jmsDriverMgtNotifer -> send(queueMessage);
             }
 
