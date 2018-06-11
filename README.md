@@ -703,7 +703,7 @@ TODO deployment kubernetees
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `messaging-with-jms-queues/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `inter-prceosss-communication/guide/`.
 
 ```ballerina
 [b7a.observability]
