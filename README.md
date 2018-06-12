@@ -611,7 +611,7 @@ First let's see how to configure `ActiveMQ` in docker container.
 
 Now let's see how we can deploy the `bookstore_service` we developed above on docker. We need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
-##### trip-management.bal.bal
+##### trip-management.bal
 ```ballerina
 import ballerina/log;
 import ballerina/http;
@@ -658,7 +658,7 @@ jms:Session jmsSession = new(jmsConnection, {
 ...
 
 ```
-- You may configure other services the same way as above, `dispatcher.bal`, `passanger-management.bal`, `driver-management.bal` what you may need to change `@docker:Config` names to the respective services
+- You may configure other services the same way as above i.e `dispatcher.bal`, `passanger-management.bal`, `driver-management.bal` what you may need to change `@docker:Config` names to the respective services
 
 
 - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field `files` of CopyFiles docker annotation. `@docker:Expose {}` is used to expose the port. 
