@@ -482,7 +482,7 @@ service<jms:Consumer> DriverNotificationService bind jmsConsumer {
 
 Similar to the JMS consumer, here also we require to provide JMS configuration details when defining the `jms:QueueSender` endpoint. We need to provide the JMS session and the queue to which the producer pushes the messages.   
 
-To see the complete implementation of the above, refer to the [bookstore_service.bal](https://github.com/ballerina-guides/messaging-with-jms-queues/blob/master/guide/bookstore_service/bookstore_service.bal).
+To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-process-communication/tree/master//driver-management.bal).
 
 ## Testing 
 
@@ -581,8 +581,10 @@ As the first step, you can build Ballerina executable archives (.balx) of the se
 
 - The successful execution of a service will show us something similar to the following output.
 ```
-   ballerina: initiating service(s) in 'target/bookstore_service.balx'
-   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+   ballerina: initiating service(s) in 'target/trip-management.balx'
+   ballerina: initiating service(s) in 'target/dispatcher.balx'
+   ballerina: initiating service(s) in 'target/passenger-management.balx'
+   ballerina: initiating service(s) in 'target/driver-management.balx'
 ```
 
 ### Deploying on Docker
@@ -609,7 +611,7 @@ First let's see how to configure `ActiveMQ` in docker container.
    $ docker ps
 ```
 
-Now let's see how we can deploy the `bookstore_service` we developed above on docker. We need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
+Now let's see how we can deploy the `trip-management` we developed above on docker. We need to import  `ballerinax/docker` and use the annotation `@docker:Config` as shown below to enable docker image generation during the build time. 
 
 ##### trip-management.bal
 ```ballerina
@@ -759,7 +761,7 @@ Follow the following steps to use tracing with Ballerina.
 
 - Navigate to `inter-process-communication/guide` and run the `trip-management` using following command 
 ```
-   $ ballerina run bookstore_service/
+   $ ballerina run trip-management/
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -769,7 +771,7 @@ Follow the following steps to use tracing with Ballerina.
 
 ### Metrics
 Metrics and alerts are built-in with ballerina. We will use Prometheus as the monitoring tool.
-Follow the below steps to set up Prometheus and view metrics for bookstore_service service.
+Follow the below steps to set up Prometheus and view metrics for trip-management service.
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
@@ -824,7 +826,7 @@ Ballerina has a log package for logging to the console. You can import ballerina
 
 - Start the Ballerina Service with the following command from `inter-process-communication/guide`
 ```
-   $ nohup ballerina run bookstore_service/ &>> ballerina.log&
+   $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `inter-process-communication/guide` directory
 
@@ -901,7 +903,7 @@ iii) Start the logstash container, replace the {SAMPLE_ROOT} with your directory
      
 ```
 $ docker run -v {SAMPLE_ROOT}/filbeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
--v {SAMPLE_ROOT}/guide/bookstore_service/ballerina.log:/usr/share\
+-v {SAMPLE_ROOT}/guide/trip-management/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
 ```
  
