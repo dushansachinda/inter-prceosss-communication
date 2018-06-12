@@ -29,10 +29,10 @@ When selecting an Inter process communication mechanism for a service, it is alw
 
 Each service typically uses a combination of these interaction styles. For some services, a single IPC mechanism is sufficient. Other services might need to use a combination of IPC mechanisms. The following diagram shows how services in a taxi-hailing application might interact when the user requests a trip.
 
-![alt text](/images/Richardson-microservices-part3-monolith-vs-microservices-1024x518.png)
+![alt text](/images/microservices-monolith-vs-microservices.png)
 
 In Microservices architecture, The services use a combination of notifications, request/response, and publish/subscribe. For example, the passenger’s smartphone sends a notification to the Trip Management service to request a pickup. The Trip Management service verifies that the passenger’s account is active by using request/response to invoke the Passenger Service. The Trip Management service then creates the trip and uses publish/subscribe to notify other services including the Dispatcher, which locates an available driver.
-![alt text](/images/Richardson-microservices-part3-taxi-service.png)
+![alt text](/images/microservices--taxi-service.png)
 
 
 So, lets try to demonstrate the scenario,
