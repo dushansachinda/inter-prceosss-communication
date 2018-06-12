@@ -16,7 +16,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you’ll build
-In a monolithic application process, components interactions are designed in a way that invoke one another via language‑level method or function calls. On the other hand, a microservices‑based application fully focused on distributed system running on multiple singular containers. Each service instance is typically a process. Consequently, as the following diagram shows, services must interact using an inter‑process communication (IPC) mechanism.
+The old fasion monolithic application process, components interactions are designed in a way that invoke one another via language‑level method or function calls. On the other hand, a microservices‑based application fully focused on distributed system running on multiple singular containers. Each service instance is typically a process. Consequently, as the following diagram shows, services must interact using an inter‑process communication mechanism.
 
 When selecting an Inter process communication mechanism for a service, it is always useful to think first about how services interact. There are a variety of client⇔service interaction styles. They can be categorized along two dimensions. The first dimension is whether the interaction is one‑to‑one or one‑to‑many:
 
