@@ -484,6 +484,8 @@ service<jms:Consumer> DriverNotificationService bind jmsConsumer {
     
 }
 ```
+To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-microservice-communicaiton/tree/master//driver-management.bal).
+
 
 Similar to the JMS consumer, here also we require to provide JMS configuration details when defining the `jms:QueueSender` endpoint. We need to provide the JMS session and the queue to which the producer pushes the messages.   
 
@@ -536,8 +538,6 @@ endpoint http:LoadBalanceClient passengerMgtEP {
 };
 
  ```
-
-To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-microservice-communicaiton/tree/master//driver-management.bal).
 
 ## Testing 
 
