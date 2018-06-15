@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-jms-queues.svg?branch=master)](https://travis-ci.org/ballerina-guides/messaging-with-jms-queues)
+[![Build Status](https://travis-ci.org/ballerina-guides/messaging-with-jms-queues.svg?branch=master)](https://github.com/ballerina-guides/inter-microservice-communicaiton)
 
 # Inter-Process Communication in a Microservices Architecture
 
@@ -75,7 +75,7 @@ Ballerina is a complete programming language that supports custom project struct
 
 - Create the above directories in your local machine and also create empty `.bal` files.
 
-- Then open the terminal and navigate to `inter-process-communication/guide` and run Ballerina project initializing toolkit.
+- Then open the terminal and navigate to `inter-microservice-communicaiton/guide` and run Ballerina project initializing toolkit.
 ```bash
    $ ballerina init
 ```
@@ -289,6 +289,7 @@ service<jms:Consumer> TripDispatcher bind jmsConsumer {
         //TODO fix the way to extract JSON path message from JMS message
         Trip trip;
         
+        // data mapper logic can be enhaced using multiple backend data services
         trip.person.name = "dushan";
         trip.person.address="1817";
         trip.person.phonenumber="0014089881345";
@@ -482,7 +483,7 @@ service<jms:Consumer> DriverNotificationService bind jmsConsumer {
 
 Similar to the JMS consumer, here also we require to provide JMS configuration details when defining the `jms:QueueSender` endpoint. We need to provide the JMS session and the queue to which the producer pushes the messages.   
 
-To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-process-communication/tree/master//driver-management.bal).
+To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-microservice-communicaiton/tree/master//driver-management.bal).
 
 ## Testing 
 
@@ -493,7 +494,7 @@ To see the complete implementation of the above, refer to the [driver-management
    $ ./activemq start
 ```
 
-- Navigate to `inter-process-communication/guide` and run the following commands in separate terminals to start  `trip-management`,  `passenger-management` ,`dispatcher`, `driver-management` microservices.
+- Navigate to `inter-microservice-communicaiton/guide` and run the following commands in separate terminals to start  `trip-management`,  `passenger-management` ,`dispatcher`, `driver-management` microservices.
 ```bash
    $ ballerina run trip-management
 ```
@@ -554,7 +555,7 @@ In Ballerina, the unit test cases should be in the same package inside a folder 
   
 This guide contains unit test cases for each resource available in the 'trip-management' implemented above. 
 
-To run the unit tests, navigate to `inter-process-communication/guide/` and run the following command. 
+To run the unit tests, navigate to `inter-microservice-communicaiton/guide/` and run the following command. 
 ```bash
    $ ballerina test
 ```
@@ -569,7 +570,7 @@ Once you are done with the development, you can deploy the services using any of
 
 ### Deploying locally
 
-As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `inter-process-communication/guide` and run the following command.
+As the first step, you can build Ballerina executable archives (.balx) of the services that we developed above. Navigate to `inter-microservice-communicaiton/guide` and run the following command.
 ```bash
    $ ballerina build
 ```
@@ -665,7 +666,7 @@ jms:Session jmsSession = new(jmsConnection, {
 
 - `@docker:Config` annotation is used to provide the basic docker image configurations for the sample. `@docker:CopyFiles` is used to copy the JMS broker jar files into the ballerina bre/lib folder. You can provide multiple files as an array to field `files` of CopyFiles docker annotation. `@docker:Expose {}` is used to expose the port. 
 
-- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `inter-process-communication/guide` and run the following command.  
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to `inter-microservice-communicaiton/guide` and run the following command.  
   
 - Then start each services through docker container seperately
 ```
@@ -714,7 +715,7 @@ TODO deployment kubernetees
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `inter-process-communication/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `inter-microservice-communicaiton/guide/`.
 
 ```ballerina
 [b7a.observability]
@@ -759,7 +760,7 @@ Follow the following steps to use tracing with Ballerina.
    -p16686:16686 p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `inter-process-communication/guide` and run the `trip-management` using following command 
+- Navigate to `inter-microservice-communicaiton/guide` and run the `trip-management` using following command 
 ```
    $ ballerina run trip-management/
 ```
@@ -824,11 +825,11 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
-- Start the Ballerina Service with the following command from `inter-process-communication/guide`
+- Start the Ballerina Service with the following command from `inter-microservice-communicaiton/guide`
 ```
    $ nohup ballerina run trip-management/ &>> ballerina.log&
 ```
-   NOTE: This will write the console log to the `ballerina.log` file in the `inter-process-communication/guide` directory
+   NOTE: This will write the console log to the `ballerina.log` file in the `inter-microservice-communicaiton/guide` directory
 
 - Start Elasticsearch using the following command
 
