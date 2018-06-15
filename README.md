@@ -213,18 +213,22 @@ import ballerina/io;
 import ballerina/jms;
 import ballerina/http;
 
+//data model Trip
 type Trip{
     string tripID;
     Driver driver;
     Person person;
     string time;
 };
+
+//data model Driver
 type Driver{
     string driverID;
     string drivername;
 
 };
 
+//data model Person
 type Person {
     string name;
     string address;
@@ -482,6 +486,56 @@ service<jms:Consumer> DriverNotificationService bind jmsConsumer {
 ```
 
 Similar to the JMS consumer, here also we require to provide JMS configuration details when defining the `jms:QueueSender` endpoint. We need to provide the JMS session and the queue to which the producer pushes the messages.   
+
+### Handling Failures and Endpoint Resilience
+
+Distributed system there is the ever-present risk of partial failure or complete system unavailability. Since clients and services are separate processes, a service might not be able to respond in a timely way to a client’s request. A service might be down because of a failure or for maintenance. Or the service might be overloaded and responding extremely slowly to requests. Ballerina language offered the components to implement 'The circuit breaker pattern' which is defined as the standard way to automatically degrade functionality when remote services fail. When you use the circuit breaker pattern, you can allow a web service to continue operating without waiting for unresponsive remote services.
+
+Lets focus the `trip-manager.bal`, the the integration required certain amount of resilience since the component suppose to communicate between multiple services. So you may have chance of introducing circuit breaker for passengerMgtEP
+
+##### trip-management.bal
+```ballerina
+
+...
+// Client endpoint to communicate with passager management service
+endpoint http:Client passengerMgtEP {
+
+    // The 'circuitBreaker' term incorporate circuit breaker pattern to the client endpoint
+    // Circuit breaker will immediately drop remote calls if the endpoint exceeded the failure threshold
+    circuitBreaker: {
+        rollingWindow: {
+            timeWindowMillis: 10000,
+            bucketSizeMillis: 2000
+        },
+        // Failure threshold should be in between 0 and 1
+        failureThreshold: 0.2,
+        // Reset timeout for circuit breaker should be in milliseconds
+        resetTimeMillis: 10000,
+        // httpStatusCodes will have array of http error codes tracked by the circuit breaker
+        statusCodes: [400, 404, 500]
+    },
+    // HTTP client could be any HTTP endpoint that have risk of failure
+     url:"http://localhost:9091/passenger-management"
+    ,
+    timeoutMillis: 2000
+};
+        
+ ```
+ 
+
+or introducing failover to connect multiple passenger-management endpoints to cope with unexpected failures
+
+```ballerina
+endpoint http:LoadBalanceClient passengerMgtEP {
+    targets: [
+    // Create an array of HTTP Clients that needs to be Load balanced across
+        { url: "http://localhost:9011/passenger-management" },
+        { url: "http://localhost:9012/passenger-management" },
+        { url: "http://localhost:9013/passenger-management" }
+    ]
+};
+
+ ```
 
 To see the complete implementation of the above, refer to the [driver-management.bal](https://github.com/dushansachinda/inter-microservice-communicaiton/tree/master//driver-management.bal).
 
